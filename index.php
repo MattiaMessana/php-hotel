@@ -65,9 +65,30 @@ $hotels = [
 //     echo "</div>";
 // }
 
-// $si = $_GET['si'];
-// $no = $_GET['no'];
+$filtered_hotels = $hotels;
 
+
+if( isset($_GET['parking']) && $_GET["parking"] === "1") {
+    // echo "stampo solo con pargheggio";
+    $temp_hotels = [];
+    foreach($hotels as $hotel) {
+        if($hotel["parking"]) {
+            $temp_hotels[] = $hotel;
+        }
+    }
+    $filtered_hotels = $temp_hotels;
+}
+
+if( isset($_GET['vote'])) {
+    $selected_vote = intval($_GET['vote']);
+    $temp_hotels = [];
+    foreach($hotels as $hotel) {
+        if ($hotel['vote'] >= $selected_vote) {
+            $temp_hotels[] = $hotel;
+        }
+    }
+    $filtered_hotels = $temp_hotels;
+}
 
 ?>
 
@@ -87,12 +108,20 @@ $hotels = [
 </head>
 
 <body>
-    <form action="./parking.php" method="get">
-        <select id="">
-            <option value=""> -- cerca per parcheggio-- </option>
-            <option name="si">si</option>
-            <option name="no">no</option>
+    <form action="index.php" method="get">
+        <select id="" name="parking" aria-label="filtra per parcheggio">
+            <option value="" selected> tutti</option>
+            <option value="1">con pargheggio</option>
         </select>
+        <select id="" name="vote" aria-label="filtra per voto">
+            <option value="" selected> tutti</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <button type="submit">filtra</button>
     </form>
 
     <table class="table">
@@ -106,8 +135,8 @@ $hotels = [
                 <th scope="col">Stelle</th>
             </tr>
         </thead>
-        <?php foreach ($hotels as $list_hotel => $cur_hotel) { ?>
-            <tbody>
+        <tbody>
+            <?php foreach ($filtered_hotels as $list_hotel => $cur_hotel) { ?>
                 <tr>
                     <th scope="row"><?php echo ($list_hotel += 1); ?></th>
                     <td><?php echo $cur_hotel['name']; ?></td>
@@ -139,8 +168,8 @@ $hotels = [
                         <!-- /stelle -->
                     </td>
                 </tr>
-            </tbody>
-        <?php } ?>
+            <?php } ?>
+        </tbody>
     </table>
 
 
